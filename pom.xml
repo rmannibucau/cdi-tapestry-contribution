@@ -6,8 +6,7 @@
 
   <groupId>com.github.rmannibucau</groupId>
   <artifactId>cdi-tapestry-contribution</artifactId>
-  <version>1.0.0</version>
-  <packaging>jar</packaging>
+  <version>1.0.0-SNAPSHOT</version>
   <name>CDI Tapestry Contribution</name>
 
   <dependencies>
