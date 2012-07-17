@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/rmannibucau/cdi-tapestry-contribution.png)](http://travis-ci.org/rmannibucau/cdi-tapestry-contribution)
+
 CDI Tapestry Contribution
 =========================
 
