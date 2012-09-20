@@ -56,20 +56,20 @@ public class InjectTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsWebInfResource(new StringAsset(
                         Descriptors.create(WebAppDescriptor.class)
-                                .version("3.0")
+                            .version("3.0")
                                 .createContextParam()
                                 .paramName("tapestry.app-package")
                                 .paramValue(Pojo.class.getPackage().getName())
-                                .up()
-                                .createFilter()
+                            .up()
+                            .createFilter()
                                 .filterName("pojo")
                                 .filterClass(TapestryFilter.class.getName())
-                                .up()
-                                .createFilterMapping()
+                            .up()
+                            .createFilterMapping()
                                 .filterName("pojo")
                                 .urlPattern("/*")
-                                .up()
-                                .exportAsString()),
+                            .up()
+                            .exportAsString()),
                         "web.xml")
 
                 // tapestry dependencies, for real project put it in a helper class: new TapestryArchive(name)...
