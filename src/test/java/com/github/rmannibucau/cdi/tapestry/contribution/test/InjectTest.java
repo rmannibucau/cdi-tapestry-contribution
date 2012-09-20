@@ -4,6 +4,7 @@ import antlr.Grammar;
 import com.github.rmannibucau.cdi.tapestry.contribution.BeanManagerHolder;
 import com.github.rmannibucau.cdi.tapestry.contribution.CDIInjectModule;
 import com.github.rmannibucau.cdi.tapestry.contribution.test.pages.Index;
+import com.github.rmannibucau.cdi.tapestry.contribution.test.services.PojoModule;
 import org.antlr.runtime.Lexer;
 import org.antlr.stringtemplate.StringTemplate;
 import org.apache.commons.codec.StringEncoder;
@@ -25,7 +26,7 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.descriptor.api.Descriptors;
-import org.jboss.shrinkwrap.descriptor.api.spec.servlet.web.WebAppDescriptor;
+import org.jboss.shrinkwrap.descriptor.api.webapp30.WebAppDescriptor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,7 +43,7 @@ public class InjectTest {
     @ArquillianResource
     private URL url;
 
-    @Deployment
+    @Deployment(testable = false)
     public static WebArchive war() {
         return ShrinkWrap.create(WebArchive.class, "inject.war")
                 // our module (src/main), as we are in the same project building the jar on the fly
@@ -51,18 +52,25 @@ public class InjectTest {
                         .addAsManifestResource(new StringAsset(BeanManagerHolder.class.getName()), "services/" + Extension.class.getName()))
 
                 // our test classes (src/test) = the webapp
-                .addClasses(NamedPojo.class, Pojo.class, Index.class)
+                .addClasses(NamedPojo.class, Pojo.class, Index.class, PojoModule.class)
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsWebInfResource(new StringAsset(
                         Descriptors.create(WebAppDescriptor.class)
-                            .version("3.0")
-                            .contextParam("tapestry.app-package", Pojo.class.getPackage().getName())
-                            .filter("pojo", TapestryFilter.class, new String[] { "/*" })
-                            .exportAsString()),
+                                .version("3.0")
+                                .createContextParam()
+                                .paramName("tapestry.app-package")
+                                .paramValue(Pojo.class.getPackage().getName())
+                                .up()
+                                .createFilter()
+                                .filterName("pojo")
+                                .filterClass(TapestryFilter.class.getName())
+                                .up()
+                                .createFilterMapping()
+                                .filterName("pojo")
+                                .urlPattern("/*")
+                                .up()
+                                .exportAsString()),
                         "web.xml")
-
-                // helper for our test
-                .addAsLibraries(JarLocation.jarLocation(IO.class))
 
                 // tapestry dependencies, for real project put it in a helper class: new TapestryArchive(name)...
                 .addAsLibraries(JarLocation.jarLocation(Lexer.class))
