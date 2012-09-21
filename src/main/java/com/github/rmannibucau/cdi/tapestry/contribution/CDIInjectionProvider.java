@@ -56,12 +56,12 @@ public final class CDIInjectionProvider extends InjectNamedProvider {
 
         try {
             final BeanInstance instance = getInstance(fieldClass, qualifiers);
-            final boolean resolved = instance.isResolved();
+            final boolean resolved = instance != null && instance.isResolved();
             if (resolved) {
                 field.inject(instance.getBean());
             }
 
-            if (instance.isReleasable()) {
+            if (instance != null && instance.isReleasable()) {
                 synchronized (instancesToRelease) {
                     instancesToRelease.add(instance);
                 }
